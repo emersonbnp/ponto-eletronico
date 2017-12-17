@@ -19,85 +19,71 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
+import ch.qos.logback.classic.pattern.Util;
 import pontoeletronico.util.UtilConstantes;
 
 @Configuration
 public class OAuth2ServerConfiguration {
 
-    private static final String RESOURCE_ID = "restservice";
+	private static final String RESOURCE_ID = "restservice";
 
-    @Configuration
-    @EnableResourceServer
-    protected static class ResourceServerConfiguration extends
-            ResourceServerConfigurerAdapter {
+	@Configuration
+	@EnableResourceServer
+	protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-        @Override
-        public void configure(ResourceServerSecurityConfigurer resources) {
-            resources
-                    .resourceId(RESOURCE_ID);
-        }
+		@Override
+		public void configure(ResourceServerSecurityConfigurer resources) {
+			resources.resourceId(RESOURCE_ID);
+		}
 
-        @Override
-        public void configure(HttpSecurity http) throws Exception {
-            http
-                    .logout()
-                    .invalidateHttpSession(true)
-                    .clearAuthentication(true)
-                    .and().authorizeRequests()
-                    .antMatchers("/usuario/**").hasAnyRole(UtilConstantes.ROLE_ADMIN)
-                    .antMatchers("/produto/**").hasAnyRole(UtilConstantes.ROLE_ADMIN, UtilConstantes.ROLE_GESTOR, UtilConstantes.ROLE_GERENTE)
-                    .anyRequest().denyAll()
-                    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
-        }
+		@Override
+		public void configure(HttpSecurity http) throws Exception {
+			http.logout().invalidateHttpSession(true).clearAuthentication(true).and().authorizeRequests()
+					.antMatchers("/admin/**").hasAnyRole(UtilConstantes.ROLE_ADMIN)
+					.antMatchers("/gestor/**").hasAnyRole(UtilConstantes.ROLE_ADMIN, UtilConstantes.ROLE_GESTOR)
+					.antMatchers("/funcionario/**").hasAnyRole(UtilConstantes.ROLE_ADMIN, UtilConstantes.ROLE_GESTOR, UtilConstantes.ROLE_FUNCIONARIO)
+					.anyRequest().denyAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+		}
 
-    }
+	}
 
-    @Configuration
-    @EnableAuthorizationServer
-    protected static class AuthorizationServerConfiguration extends
-            AuthorizationServerConfigurerAdapter {
+	@Configuration
+	@EnableAuthorizationServer
+	protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
-        private TokenStore tokenStore = new InMemoryTokenStore();
+		private TokenStore tokenStore = new InMemoryTokenStore();
 
-        @Autowired
-        @Qualifier("authenticationManagerBean")
-        private AuthenticationManager authenticationManager;
+		@Autowired
+		@Qualifier("authenticationManagerBean")
+		private AuthenticationManager authenticationManager;
 
-        @Autowired
-        private UserDetailsServiceImplementation userDetailsService;
+		@Autowired
+		private UserDetailsServiceImplementation userDetailsService;
 
-        @Override
-        public void configure(AuthorizationServerEndpointsConfigurer endpoints)
-                throws Exception {
-            endpoints
-                    .tokenStore(this.tokenStore)
-                    .authenticationManager(this.authenticationManager)
-                    .userDetailsService(userDetailsService);
-        }
+		@Override
+		public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+			endpoints.tokenStore(this.tokenStore).authenticationManager(this.authenticationManager)
+					.userDetailsService(userDetailsService);
+		}
 
-        @Override
-        public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-            clients
-                    .inMemory()
-                    .withClient("cliente")
-                    .authorizedGrantTypes("password", "authorization_code", "refresh_token").scopes("bar", "read", "write")
-                    .refreshTokenValiditySeconds(2592000)
-                    .resourceIds(RESOURCE_ID)
-                    .secret("123")
-                    .accessTokenValiditySeconds(200000988)
-                    ;
+		@Override
+		public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+			clients.inMemory().withClient("cliente")
+					.authorizedGrantTypes("password", "authorization_code", "refresh_token")
+					.scopes("bar", "read", "write").refreshTokenValiditySeconds(2592000).resourceIds(RESOURCE_ID)
+					.secret("123").accessTokenValiditySeconds(200000988);
 
-        }
+		}
 
-        @Bean
-        @Primary
-        public DefaultTokenServices tokenServices() {
-            DefaultTokenServices tokenServices = new DefaultTokenServices();
-            tokenServices.setSupportRefreshToken(true);
-            tokenServices.setTokenStore(this.tokenStore);
-            return tokenServices;
-        }
+		@Bean
+		@Primary
+		public DefaultTokenServices tokenServices() {
+			DefaultTokenServices tokenServices = new DefaultTokenServices();
+			tokenServices.setSupportRefreshToken(true);
+			tokenServices.setTokenStore(this.tokenStore);
+			return tokenServices;
+		}
 
-    }
+	}
 
 }

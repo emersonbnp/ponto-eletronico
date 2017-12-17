@@ -14,36 +14,33 @@ import pontoeletronico.entity.Usuario;
 import pontoeletronico.repository.UsuarioRepository;
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/admin")
 public class UsuarioService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
-	@RequestMapping(value = "/listAll", method = RequestMethod.GET)
-	public List<Usuario> listAll() {
+	@RequestMapping(value = "/listarTodos", method = RequestMethod.GET)
+	public List<Usuario> listarTodos() {
 		ArrayList<Usuario> users = (ArrayList<Usuario>) usuarioRepository.findAll();
 		return users;
 	}
-	
-	@RequestMapping ("/findUserByLogin")
-	public Usuario findUserByLogin (@RequestParam(value = "login") String login) {
-		//Pageable page = ;
-		return usuarioRepository.findUserByEmail(login);
+
+	@RequestMapping("/buscarUsuarioPeloEmail")
+	public Usuario buscarUsuarioPeloEmail(@RequestParam(value = "email") String email) {
+		// Pageable page = ;
+		return usuarioRepository.buscarUsuarioPeloEmail(email);
 	}
-	
-	@RequestMapping ("/addUser")
-	public String addUser (@RequestBody Usuario user) {
+
+	@RequestMapping("/addUser")
+	public String addUser(@RequestBody Usuario user) {
 		try {
 			usuarioRepository.save(user);
 			return "Usuário salvo com sucesso: " + user.toString();
 		} catch (Exception e) {
 			return "Erro ao salvar: " + e.getCause();
 		}
-		
+
 	}
-	
-	
-	
-	
+
 }

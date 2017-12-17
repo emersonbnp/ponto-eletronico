@@ -15,65 +15,65 @@ import pontoeletronico.repository.UsuarioRepository;
 @Service
 public class UserDetailsServiceImplementation implements UserDetailsService {
 
-    private final UsuarioRepository userRepository;
+	private final UsuarioRepository userRepository;
 
-    @Autowired
-    public UserDetailsServiceImplementation(UsuarioRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+	@Autowired
+	public UserDetailsServiceImplementation(UsuarioRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = userRepository.findUserByEmail(username);
-        if (usuario == null) {
-            throw new UsernameNotFoundException(String.format("Usuário não existe!", username));
-        }
-        return new UserRepositoryUserDetails(usuario);
-    }
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Usuario usuario = userRepository.buscarUsuarioPeloEmail(username);
+		if (usuario == null) {
+			throw new UsernameNotFoundException(String.format("Usuário não existe!", username));
+		}
+		return new UserRepositoryUserDetails(usuario);
+	}
 
-    private final static class UserRepositoryUserDetails extends Usuario implements UserDetails {
+	private final static class UserRepositoryUserDetails extends Usuario implements UserDetails {
 
-        private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1L;
 
-        private UserRepositoryUserDetails(Usuario usuario) {
-            super(usuario);
-        }
+		private UserRepositoryUserDetails(Usuario usuario) {
+			super(usuario);
+		}
 
-        @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
-            return getRoles();
-        }
+		@Override
+		public Collection<? extends GrantedAuthority> getAuthorities() {
+			return getPerfis();
+		}
 
-        @Override
-        public String getUsername() {
-            return getEmail();
-        }
+		@Override
+		public String getUsername() {
+			return getEmail();
+		}
 
-        @Override
-        public boolean isAccountNonExpired() {
-            return true;
-        }
+		@Override
+		public boolean isAccountNonExpired() {
+			return true;
+		}
 
-        @Override
-        public boolean isAccountNonLocked() {
-            return true;
-        }
+		@Override
+		public boolean isAccountNonLocked() {
+			return true;
+		}
 
-        @Override
-        public boolean isCredentialsNonExpired() {
-            return true;
-        }
+		@Override
+		public boolean isCredentialsNonExpired() {
+			return true;
+		}
 
-        @Override
-        public boolean isEnabled() {
-            return true;
-        }
+		@Override
+		public boolean isEnabled() {
+			return isAtivo().isSim() == true;
+		}
 
-        @Override
-        public String getPassword() {
-            return getSenha();
-        }
+		@Override
+		public String getPassword() {
+			return getSenha();
+		}
 
-    }
+	}
 
 }

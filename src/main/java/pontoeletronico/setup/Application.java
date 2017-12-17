@@ -19,9 +19,9 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
-	
+
 	@Bean
-	public CorsFilter corsFilter () {
+	public CorsFilter corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
@@ -36,16 +36,16 @@ public class Application {
 		return new CorsFilter(source);
 	}
 
-///*	@Bean
-//	DataSource dataSource() throws SQLException {
-//
-//		OracleDataSource dataSource = new OracleDataSource();
-//		dataSource.setUser("smsl");
-//		dataSource.setPassword("301091");
-//		dataSource.setURL("jdbc:oracle:thin:@localhost:1522:xe");
-//		dataSource.setImplicitCachingEnabled(true);
-//		dataSource.setFastConnectionFailoverEnabled(true);
-//		return (DataSource) dataSource;
-//	}*/
+	/// * @Bean
+	// DataSource dataSource() throws SQLException {
+	//
+	// OracleDataSource dataSource = new OracleDataSource();
+	// dataSource.setUser("smsl");
+	// dataSource.setPassword("301091");
+	// dataSource.setURL("jdbc:oracle:thin:@localhost:1522:xe");
+	// dataSource.setImplicitCachingEnabled(true);
+	// dataSource.setFastConnectionFailoverEnabled(true);
+	// return (DataSource) dataSource;
+	// }*/
 
 }
