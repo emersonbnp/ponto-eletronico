@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -17,7 +18,7 @@ public class Pessoa {
 
 	@Id
 	@Column(name = "ID_PESSOA")
-	@SequenceGenerator(name="PESSOA_SEQUENCE", sequenceName="S_PESSOA")
+	@SequenceGenerator(name = "PESSOA_SEQUENCE", sequenceName = "S_PESSOA")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PESSOA_SEQUENCE")
 	private Long id;
 
@@ -33,6 +34,10 @@ public class Pessoa {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ID_CARGO")
 	private Cargo cargo;
+
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ID_USUARIO")
+	private Usuario usuario;
 
 	public Long getId() {
 		return id;
@@ -72,6 +77,14 @@ public class Pessoa {
 
 	public void setCargo(Cargo cargo) {
 		this.cargo = cargo;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }

@@ -1,15 +1,15 @@
-package pontoeletronico.exceptoin;
+package pontoeletronico.exception;
 
-public class APIException extends RuntimeException {
+public abstract class ExcecaoInformativa extends Exception {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 8773076273893731799L;
+	private static final long serialVersionUID = -5886536860097899938L;
 	private Integer codigo;
 	private String mensagem;
 
-	public APIException(Integer codigo, String mensagem) {
+	public ExcecaoInformativa(Integer codigo, String mensagem) {
 		super();
 		this.codigo = codigo;
 		this.mensagem = mensagem;

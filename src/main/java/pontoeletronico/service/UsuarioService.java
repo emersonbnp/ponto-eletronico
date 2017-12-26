@@ -32,8 +32,8 @@ public class UsuarioService {
 		return usuarioRepository.buscarUsuarioPeloEmail(email);
 	}
 
-	@RequestMapping("/addUser")
-	public String addUser(@RequestBody Usuario user) {
+	@RequestMapping("/adicionarUsuario")
+	public String adicionarUsuario(@RequestBody Usuario user) {
 		try {
 			usuarioRepository.save(user);
 			return "Usuário salvo com sucesso: " + user.toString();

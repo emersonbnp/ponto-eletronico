@@ -19,7 +19,6 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
-import ch.qos.logback.classic.pattern.Util;
 import pontoeletronico.util.UtilConstantes;
 
 @Configuration
@@ -39,9 +38,9 @@ public class OAuth2ServerConfiguration {
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
 			http.logout().invalidateHttpSession(true).clearAuthentication(true).and().authorizeRequests()
-					.antMatchers("/admin/**").hasAnyRole(UtilConstantes.ROLE_ADMIN)
-					.antMatchers("/gestor/**").hasAnyRole(UtilConstantes.ROLE_ADMIN, UtilConstantes.ROLE_GESTOR)
-					.antMatchers("/funcionario/**").hasAnyRole(UtilConstantes.ROLE_ADMIN, UtilConstantes.ROLE_GESTOR, UtilConstantes.ROLE_FUNCIONARIO)
+					.antMatchers("/admin/**").hasAnyRole(UtilConstantes.ROLE_ADMIN).antMatchers("/gestor/**")
+					.hasAnyRole(UtilConstantes.ROLE_ADMIN, UtilConstantes.ROLE_GESTOR).antMatchers("/funcionario/**")
+					.hasAnyRole(UtilConstantes.ROLE_ADMIN, UtilConstantes.ROLE_GESTOR, UtilConstantes.ROLE_FUNCIONARIO)
 					.anyRequest().denyAll().antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 		}
 

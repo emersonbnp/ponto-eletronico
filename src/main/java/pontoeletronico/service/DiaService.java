@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import pontoeletronico.entity.Dia;
-import pontoeletronico.exceptoin.PrivilegiosInsuficientesException;
+import pontoeletronico.entity.Usuario;
+import pontoeletronico.exception.PrivilegiosInsuficientesException;
 import pontoeletronico.repository.DiaRepository;
+import pontoeletronico.repository.UsuarioRepository;
+import pontoeletronico.util.UtilConstantes;
 
 @RestController
 @RequestMapping("/")
@@ -24,8 +27,11 @@ public class DiaService {
 
 	@Autowired
 	private DiaRepository diaRepository;
+	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
-	@RequestMapping(value = "/funcionario/listarDiasPorPeriodoFuncionario/{dataInicial}/{dataFinal}/{page}/{count}", method = RequestMethod.GET)
+	@RequestMapping(value = "/funcionario/listarDiasPorPeriodoFuncionario/{emailUsuario}/{dataInicial}/{dataFinal}/{page}/{count}", method = RequestMethod.GET)
 	public @ResponseBody Page<Dia> listarDiasPorPeriodoFuncionario(Principal principal,
 			@PathVariable String emailUsuario,
 			@PathVariable @DateTimeFormat(pattern = "dd-MM-yyyy") Date dataInicial,
@@ -33,7 +39,8 @@ public class DiaService {
 			@PathVariable int page,
 			@PathVariable int count) throws PrivilegiosInsuficientesException, Exception {
 		try {
-			if (principal != null && principal.getName() != null && principal.getName().equals(emailUsuario)) {
+			Usuario usuario = usuarioRepository.buscarUsuarioPeloEmail(principal.getName());
+			if (usuario.getEmail().equals(emailUsuario) || usuario.getPerfis().contains(UtilConstantes.ROLE_ADMIN) || usuario.getPerfis().contains(UtilConstantes.ROLE_GESTOR)) {
 				if (dataInicial != null && dataFinal != null) {
 					Pageable pages = new PageRequest(page, count);
 					return diaRepository.buscarDiasPorPeriodo(dataInicial, dataFinal, pages);
@@ -41,8 +48,11 @@ public class DiaService {
 					throw new Exception("Erro insperado!");
 				}
 			} else {
-				throw new PrivilegiosInsuficientesException("");
+				throw new PrivilegiosInsuficientesException(UtilConstantes.ERRO, "Você não possui privilégios suficientes");
 			}
+		} catch (PrivilegiosInsuficientesException p) {
+			p.printStackTrace();
+			throw p;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception("Erro inesperado!");

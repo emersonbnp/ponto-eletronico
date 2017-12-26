@@ -1,21 +1,20 @@
 package pontoeletronico.entity.enums;
 
 public enum SimNaoEnum {
-	
-	SIM(true),
-	NAO(false);
-	
+
+	SIM(true), NAO(false);
+
 	private boolean simNao;
-	
-	private SimNaoEnum (boolean bool) {
+
+	private SimNaoEnum(boolean bool) {
 		this.simNao = bool;
 	}
-	
-	public boolean isSim () {
+
+	public boolean isSim() {
 		return this.simNao == true;
 	}
 
-	public boolean isNao () {
+	public boolean isNao() {
 		return this.simNao == false;
 	}
 

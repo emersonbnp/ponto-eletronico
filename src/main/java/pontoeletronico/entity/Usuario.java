@@ -25,7 +25,7 @@ public class Usuario {
 
 	@Id
 	@Column(name = "ID_USUARIO")
-	@SequenceGenerator(name="USUARIO_SEQUENCE", sequenceName="S_USUARIO")
+	@SequenceGenerator(name = "USUARIO_SEQUENCE", sequenceName = "S_USUARIO")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USUARIO_SEQUENCE")
 	private Long id;
 
@@ -39,7 +39,7 @@ public class Usuario {
 	@JoinTable(name = "T_USUARIO_PERFIL          ", joinColumns = {
 			@JoinColumn(name = "ID_USUARIO") }, inverseJoinColumns = { @JoinColumn(name = "ID_PERFIL") })
 	private List<Perfil> perfis;
-	
+
 	@Column(name = "FL_ATIVO")
 	private String ativo;
 
@@ -85,7 +85,7 @@ public class Usuario {
 	public void setPerfis(List<Perfil> perfis) {
 		this.perfis = perfis;
 	}
-	
+
 	public String getAtivo() {
 		return ativo;
 	}
@@ -94,7 +94,7 @@ public class Usuario {
 		this.ativo = ativo;
 	}
 
-	public SimNaoEnum isAtivo () {
+	public SimNaoEnum isAtivo() {
 		return UtilConstantes.SIM.equals(this.getAtivo()) ? SimNaoEnum.SIM : SimNaoEnum.NAO;
 	}
 
